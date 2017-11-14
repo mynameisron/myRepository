@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.study.dao.Dictionary">
+    <insert id="insertContent" parameterType="java.util.HashMap">
+    	insert 
+		  into dictionary
+		(
+		 req_Cont  
+		,ans_Type  
+		,ans_Cont  
+		,ans_App   
+		)
+		values
+		(
+		 #{reqCont}  
+		,#{ansType}  
+		,#{ansCont}  
+		,#{ansApp}   
+		)
+    </insert>
+    <select id="selectContentCnt" resultType="int" parameterType="java.util.HashMap">
+        select  count(id)
+          from  dictionary
+    </select>
+    <select id="selectContent" resultType="com.company.study.domain.Dictionary" parameterType="java.util.HashMap">
+        select  dic_id
+              , req_Cont
+              , ans_Type
+              , ans_Cont
+              , ans_App
+              , date_format(reg_dttm, '%Y-%m-%d %H:%i:%s') as reg_dttm
+          from  dictionary
+         order by dic_id
+        limit #{start}, #{end}
+    </select>
+    <select id="selectContentView" resultType="com.company.study.domain.Dictionary" parameterType="java.util.HashMap">
+        select  dic_id
+              , req_Cont
+              , ans_Type
+              , ans_Cont
+              , ans_App
+              , date_format(reg_dttm, '%Y-%m-%d %H:%i:%s') as reg_dttm
+          from  dictionary
+         where  dic_id = #{dicId}
+    </select>
+    <select id="selectDincionatyCnt" resultType="int" parameterType="java.util.HashMap">
+        select  count(id)
+          from  dictionary
+         where  dic_id = #{dicId} 
+    </select>
+    <delete id="deleteDincionaty" parameterType="java.util.HashMap">
+        delete
+          from  dictionary
+         where  dic_id = #{dicId} 
+    </delete>
+</mapper>

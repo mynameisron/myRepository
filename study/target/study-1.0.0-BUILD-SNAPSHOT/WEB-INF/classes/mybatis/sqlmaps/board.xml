@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.study.dao.BoardDao">
+    <insert id="insertContent" parameterType="java.util.HashMap">
+        insert into board(
+            id,
+            subject,
+            content,
+            writer,
+            password
+        )values(
+            #{id},
+            #{subject},
+            #{content},
+            #{writer},
+            #{password}
+        )on duplicate key update
+            subject = #{subject},
+            content = #{content},
+            writer = #{writer},
+            password = #{password}
+    </insert>
+    <select id="selectContentCnt" resultType="int" parameterType="java.util.HashMap">
+        select
+            count(id)
+        from
+            board
+    </select>
+    <select id="selectContent" resultType="com.company.study.domain.Board" parameterType="java.util.HashMap">
+        select
+            id,
+            subject,
+            content,
+            writer,
+            date_format(register_datetime, '%Y-%m-%d %H:%i:%s') register_datetime
+        from
+            board
+        order by id
+        limit #{start}, #{end}
+    </select>
+    <select id="selectContentView" resultType="com.company.study.domain.Board" parameterType="java.util.HashMap">
+        select
+            id,
+            subject,
+            content,
+            writer,
+            date_format(register_datetime, '%Y-%m-%d %H:%i:%s') register_datetime
+        from
+            board
+        where
+            id = #{id}
+    </select>
+    <insert id="insertBoardReply" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="reply_id">
+        insert into board_reply(
+            board_id,
+            parent_id,
+            depth,
+            reply_content,
+            reply_writer,
+            reply_password
+        )values(
+            #{board_id},
+            #{parent_id},
+            #{depth},
+            #{reply_content},
+            #{reply_writer},
+            #{reply_password}
+        )
+    </insert>
+    <select id="selectBoardReplyList" resultType="com.company.study.domain.BoardReply" parameterType="java.util.HashMap">
+        select
+            reply_id,
+            board_id,
+            parent_id,
+            depth,
+            reply_content,
+            reply_writer,
+            reply_password
+        from
+            board_reply
+        where
+            board_id = #{id}
+        order by reply_id asc
+    </select>
+    <delete id="deleteBoardReply" parameterType="java.util.HashMap">
+        delete
+        from
+            board_reply
+        where
+            reply_id = #{reply_id}
+            and reply_password = #{reply_password}
+    </delete>
+    <select id="selectBoardCnt" resultType="int" parameterType="java.util.HashMap">
+        select
+            count(id)
+        from
+            board
+        where
+            id = #{id}
+            and password = #{password}
+    </select>
+    <delete id="deleteBoard" parameterType="java.util.HashMap">
+        delete
+        from
+            board
+        where
+            id = #{id}
+            and password = #{password}
+    </delete>
+</mapper>
